@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/latihan_ujian_dasar_infrastruktur_ti.html"
+      "destination": "/Learning S1.html"
     }
   ]
 }
