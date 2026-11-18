@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Ujian Dasar Infrastruktur TI</title>
+<style>
+:root{--bg:#f3f5f9;--card:#fff;--text:#172033;--muted:#687386;--line:#e1e6ef;--primary:#2457d6;--good:#16834a;--bad:#c33b3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:#14264b;color:#fff;padding:30px 18px}header .wrap,main{max-width:900px;margin:auto}h1{font-size:clamp(24px,4vw,34px);line-height:1.2;margin:0 0 9px}header p{margin:0;color:#d7e0f5}
+main{padding:22px 16px 55px}.panel,.qcard,.result{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:19px;margin-bottom:15px;box-shadow:0 3px 14px #17203308}
+h2{margin:0 0 5px;font-size:21px}.muted{color:var(--muted)}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.pill{background:#edf2ff;color:#2449a8;border-radius:30px;padding:4px 10px;font-size:12px;font-weight:700}
+.progress{height:8px;background:#e7ebf2;border-radius:20px;overflow:hidden;margin-top:13px}.progress span{display:block;height:100%;background:var(--primary);width:0;transition:width .2s}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.qcard{padding:17px}.qtitle{font-weight:680;margin:0 0 12px}.num{color:var(--primary);font-weight:800;margin-right:7px}
+.option{display:flex;gap:10px;align-items:flex-start;padding:10px 11px;border:1px solid var(--line);border-radius:9px;margin:7px 0;cursor:pointer}.option:hover{background:#f7f9ff}.option input{margin-top:5px;accent-color:var(--primary)}
+button{border:0;border-radius:9px;padding:11px 16px;font-weight:700;cursor:pointer;font-size:14px}.primary{background:var(--primary);color:white}.secondary{background:#e9edf5;color:#26334b}.primary:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.feedback{display:none;padding:10px 12px;border-radius:8px;margin-top:10px}.feedback.good{display:block;background:#eaf8ef;color:#12663a}.feedback.bad{display:block;background:#fff0f0;color:#a52b2b}
+#result{display:none}.score{font-size:34px;font-weight:850;color:var(--primary)}.review{border-top:1px solid var(--line);padding:12px 0}.review:last-child{border:0}.review b{display:block}.hidden{display:none!important}footer{text-align:center;color:var(--muted);font-size:13px;padding:15px}
+@media(max-width:600px){.panel,.qcard,.result{padding:14px}}
+</style></head>
+<body>
+<header><div class="wrap"><h1>Latihan Ujian Dasar Infrastruktur TI</h1><p>Bank soal latihan · 20 pilihan ganda per sesi · soal dan pilihan diacak setiap sesi</p></div></header>
+<main>
+<section class="panel">
+<div class="row"><div><h2 id="sessionTitle">Sesi 1</h2><div class="muted" id="sessionInfo">Memuat soal latihan...</div></div><span class="pill" id="bankCount">Bank soal</span></div>
+<div class="meta"><span class="pill">20 soal per sesi</span><span class="pill">Penilaian otomatis</span><span class="pill">Tanpa esai</span></div>
+<div class="progress"><span id="progressBar"></span></div><p class="muted" id="progressText">0/20 dijawab</p>
+</section>
+<div id="questions"></div>
+<div class="actions" id="submitArea"><button class="primary" id="submitBtn" disabled>Periksa jawaban</button><button class="secondary" id="resetBtn">Ulangi sesi ini</button></div>
+<section class="result" id="result" aria-live="polite"></section>
+<div class="actions hidden" id="nextArea"><button class="primary" id="nextBtn">Mulai 20 soal berikutnya</button></div>
+</main>
+<footer>Progres sesi dan riwayat soal disimpan secara lokal di browser perangkat ini.</footer>
+<script>
+const BANK = [["Infrastruktur TI adalah kumpulan sumber daya yang digunakan untuk ...", ["Mengolah, menyimpan, mengirim, dan mengelola informasi", "Mengatur strategi pemasaran saja", "Menggantikan seluruh tenaga kerja", "Membuat semua komputer bekerja tanpa sistem operasi"], 0, "Infrastruktur TI menjadi fondasi teknologi bagi aktivitas informasi organisasi."], ["Komponen yang mengelola proses, memori, dan sistem berkas komputer adalah ...", ["Browser", "Sistem operasi", "Aplikasi presentasi", "Database pelanggan"], 1, "Sistem operasi mengelola sumber daya utama komputer."], ["Perangkat keras yang berfungsi sebagai pusat pemrosesan instruksi adalah ...", ["RAM", "SSD", "CPU", "Power supply"], 2, "CPU mengeksekusi instruksi dan mengolah data."], ["Memori yang menyimpan data sementara saat program berjalan adalah ...", ["RAM", "HDD", "Flashdisk", "DVD"], 0, "RAM bersifat sementara dan digunakan saat proses berjalan."], ["Media penyimpanan yang umumnya lebih cepat karena menggunakan memori flash adalah ...", ["HDD", "SSD", "DVD", "Pita magnetik"], 1, "SSD menggunakan memori flash dan tidak memiliki piringan berputar."], ["Komponen utama yang menghubungkan berbagai perangkat keras di dalam komputer adalah ...", ["Monitor", "Motherboard", "Keyboard", "Speaker"], 1, "Motherboard menyediakan jalur komunikasi antarkomponen."], ["Penyimpanan yang terhubung langsung ke satu komputer melalui USB merupakan contoh ...", ["SAN", "NAS", "DAS", "WAN"], 2, "DAS terhubung langsung ke komputer atau server."], ["Perangkat penyimpanan yang menyediakan file melalui jaringan lokal disebut ...", ["NAS", "RAM", "CPU", "GPU"], 0, "NAS menyediakan penyimpanan yang dapat diakses melalui jaringan."], ["Jaringan khusus yang menghubungkan server dengan sistem penyimpanan tingkat blok disebut ...", ["LAN", "SAN", "PAN", "MAN"], 1, "SAN menyediakan akses storage tingkat blok untuk server."], ["Teknologi menjalankan beberapa mesin virtual pada satu server fisik disebut ...", ["Virtualisasi server", "Fragmentasi file", "Enkripsi disk", "Kompresi jaringan"], 0, "Virtualisasi server membagi sumber daya server fisik ke lingkungan virtual."], ["Layanan cloud yang memberikan mesin virtual dan penyimpanan sebagai sumber daya adalah ...", ["SaaS", "PaaS", "IaaS", "DNS"], 2, "IaaS menyediakan infrastruktur komputasi virtual."], ["Layanan cloud yang menyediakan lingkungan untuk membangun dan menjalankan aplikasi adalah ...", ["PaaS", "IaaS", "SaaS", "DAS"], 0, "PaaS menyediakan platform pengembangan dan deployment aplikasi."], ["Aplikasi siap pakai yang diakses melalui internet termasuk model ...", ["IaaS", "PaaS", "SaaS", "SAN"], 2, "SaaS menyediakan perangkat lunak siap digunakan oleh pengguna."], ["Jaringan pribadi dengan jangkauan sangat dekat, misalnya koneksi Bluetooth antarperangkat, disebut ...", ["WAN", "MAN", "LAN", "PAN"], 3, "PAN menghubungkan perangkat pribadi dalam jarak dekat."], ["Jaringan yang umumnya digunakan dalam satu gedung atau kantor adalah ...", ["LAN", "WAN", "MAN", "Internet global"], 0, "LAN mencakup area lokal seperti rumah, kantor, atau laboratorium."], ["Jaringan yang mencakup wilayah antarkota atau area metropolitan disebut ...", ["PAN", "MAN", "SAN", "DAS"], 1, "MAN mencakup wilayah metropolitan atau satu kota."], ["Jaringan yang menghubungkan lokasi berjauhan hingga antarwilayah atau negara disebut ...", ["PAN", "LAN", "WAN", "VLAN"], 2, "WAN memiliki cakupan geografis luas."], ["Perangkat yang meneruskan paket data antarjaringan berdasarkan alamat IP adalah ...", ["Hub", "Router", "Repeater", "Access point"], 1, "Router memilih jalur pengiriman paket antarjaringan."], ["Perangkat yang menghubungkan beberapa perangkat dalam LAN dan meneruskan frame ke port tujuan adalah ...", ["Switch", "Modem", "Router internet", "Firewall aplikasi"], 0, "Switch meneruskan frame berdasarkan alamat MAC."], ["Perangkat yang menyediakan akses nirkabel agar perangkat Wi-Fi terhubung ke jaringan adalah ...", ["Modem", "Hub", "Access point", "Patch panel"], 2, "Access point menyediakan konektivitas Wi-Fi ke jaringan."], ["Perangkat yang mengirim data masuk ke semua port tanpa mempelajari alamat tujuan disebut ...", ["Router", "Hub", "Switch terkelola", "Access point"], 1, "Hub meneruskan sinyal ke seluruh port yang terhubung."], ["Topologi yang menghubungkan setiap perangkat ke satu perangkat pusat disebut ...", ["Bus", "Ring", "Star", "Mesh"], 2, "Pada topologi star, perangkat terhubung ke switch atau hub pusat."], ["Topologi jaringan yang menggunakan satu jalur kabel utama sebagai media bersama adalah ...", ["Bus", "Star", "Mesh", "Tree"], 0, "Topologi bus memakai satu backbone yang digunakan perangkat."], ["Topologi yang menyediakan beberapa jalur koneksi antarperangkat untuk meningkatkan redundansi adalah ...", ["Ring", "Mesh", "Bus", "Daisy chain"], 1, "Mesh memiliki banyak jalur alternatif antarnode."], ["Teknologi untuk memisahkan satu jaringan switch fisik menjadi beberapa jaringan logis adalah ...", ["DNS", "DHCP", "VLAN", "FTP"], 2, "VLAN melakukan segmentasi jaringan secara logis."], ["Tujuan umum penerapan VLAN di perusahaan adalah ...", ["Menyatukan seluruh broadcast tanpa batas", "Memisahkan kelompok perangkat dan membantu pengelolaan jaringan", "Menggantikan fungsi sistem operasi", "Mengubah alamat domain menjadi IP"], 1, "VLAN membantu segmentasi, pengelolaan, dan pembatasan komunikasi jaringan."], ["Pendekatan perancangan jaringan yang dimulai dari tujuan dan kebutuhan organisasi adalah ...", ["Bottom-up", "Top-down", "Trial-only", "Peer-to-peer"], 1, "Top-down memulai desain dari kebutuhan bisnis atau organisasi."], ["Tahap PPDIOO yang berfokus pada pembuatan rancangan teknis adalah ...", ["Prepare", "Plan", "Design", "Operate"], 2, "Design menerjemahkan kebutuhan dan rencana menjadi rancangan teknis."], ["Dalam PPDIOO, kegiatan menjalankan dan memantau jaringan berada pada tahap ...", ["Prepare", "Implement", "Operate", "Design"], 2, "Operate adalah tahap operasional dan pemantauan jaringan."], ["Layanan yang membagikan konfigurasi IP secara otomatis kepada perangkat adalah ...", ["DNS", "DHCP", "HTTP", "SMTP"], 1, "DHCP memberikan alamat IP dan konfigurasi jaringan secara otomatis."], ["Layanan yang menerjemahkan nama domain menjadi alamat IP adalah ...", ["DHCP", "DNS", "FTP", "SSH"], 1, "DNS menerjemahkan nama domain ke alamat IP."], ["Perangkat lunak yang digunakan pengguna untuk menyelesaikan tugas seperti mengolah dokumen adalah ...", ["System software", "Application software", "Firmware jaringan", "Bootloader"], 1, "Application software membantu pengguna melakukan tugas tertentu."], ["Antivirus dan perangkat pencadangan termasuk kategori ...", ["Utility software", "Application server", "Sistem operasi", "Firmware"], 0, "Utility software mendukung pemeliharaan, keamanan, dan optimalisasi sistem."], ["Perangkat lunak yang menerjemahkan kode sumber menjadi bahasa mesin disebut ...", ["Compiler", "Browser", "File manager", "Media player"], 0, "Compiler menerjemahkan program sumber ke bentuk yang dapat dijalankan."], ["Server yang menyediakan halaman web kepada browser pengguna disebut ...", ["File server", "Web server", "Print server", "DHCP server"], 1, "Web server menerima permintaan HTTP dan mengirimkan konten web."], ["Server yang menyediakan penyimpanan dan berbagi berkas dalam jaringan disebut ...", ["File server", "DNS server", "Proxy cache saja", "Mail client"], 0, "File server mengelola akses dan berbagi berkas."], ["Dalam CIA Triad, perlindungan agar informasi tidak diakses pihak tanpa izin disebut ...", ["Availability", "Integrity", "Confidentiality", "Portability"], 2, "Confidentiality menjaga kerahasiaan informasi."], ["Dalam CIA Triad, menjaga agar data tetap akurat dan tidak diubah tanpa izin disebut ...", ["Integrity", "Availability", "Confidentiality", "Scalability"], 0, "Integrity berkaitan dengan keutuhan dan keakuratan data."], ["Dalam CIA Triad, memastikan layanan tersedia saat diperlukan disebut ...", ["Confidentiality", "Availability", "Integrity", "Authentication"], 1, "Availability memastikan sistem dan informasi dapat digunakan saat dibutuhkan."], ["Penipuan yang mencoba membuat korban memberikan kata sandi melalui pesan atau situs palsu disebut ...", ["Phishing", "Defragmentasi", "Load balancing", "Virtualisasi"], 0, "Phishing menggunakan penyamaran untuk memperoleh informasi sensitif."], ["Malware yang mengenkripsi atau mengunci data dan meminta tebusan disebut ...", ["Adware", "Ransomware", "Cookie", "Driver"], 1, "Ransomware menghambat akses ke data dan meminta pembayaran tebusan."], ["Serangan yang membanjiri layanan dengan lalu lintas sehingga sulit diakses pengguna sah disebut ...", ["DDoS", "Backup", "Patching", "Authentication"], 0, "DDoS mengganggu ketersediaan layanan dengan membanjiri sumber daya."], ["Membuat salinan data agar dapat dipulihkan ketika data utama hilang disebut ...", ["Routing", "Backup", "Encoding", "Rendering"], 1, "Backup menyediakan salinan pemulihan data."], ["Penggunaan kata sandi kuat dan autentikasi multifaktor terutama membantu melindungi ...", ["Akses akun", "Kecepatan prosesor", "Resolusi monitor", "Kapasitas kabel"], 0, "Kontrol autentikasi membantu mencegah akses akun tanpa izin."], ["Perlindungan ruang server menggunakan kunci dan kartu akses termasuk ...", ["Keamanan fisik", "Keamanan aplikasi", "Kompresi data", "Manajemen kapasitas"], 0, "Keamanan fisik membatasi akses langsung ke fasilitas dan perangkat."], ["Kerangka kerja yang dikenal untuk tata kelola dan manajemen TI adalah ...", ["COBIT", "HTML", "DHCP", "JPEG"], 0, "COBIT merupakan kerangka tata kelola dan manajemen informasi serta teknologi."], ["Panduan praktik yang banyak digunakan untuk manajemen layanan TI adalah ...", ["ITIL", "VLAN", "TCP", "SQL"], 0, "ITIL berisi praktik manajemen layanan TI."], ["Standar internasional untuk sistem manajemen keamanan informasi adalah ...", ["ISO 9001", "ISO/IEC 27001", "HTML5", "IEEE 802.11"], 1, "ISO/IEC 27001 menetapkan persyaratan sistem manajemen keamanan informasi."], ["Menyelaraskan strategi TI dengan tujuan organisasi disebut ...", ["Strategic Alignment", "Resource Management", "Performance Measurement", "Incident Logging"], 0, "Strategic Alignment memastikan arah TI mendukung strategi organisasi."], ["Memastikan investasi TI menghasilkan manfaat yang diharapkan disebut ...", ["Value Delivery", "Physical Access", "Data Entry", "Network Addressing"], 0, "Value Delivery berfokus pada realisasi manfaat dari TI."], ["Pengelolaan SDM, perangkat, anggaran, dan aset TI termasuk ...", ["Risk Management", "Resource Management", "Value Delivery", "Strategic Alignment"], 1, "Resource Management mengelola sumber daya yang diperlukan TI."], ["Mengidentifikasi dan mengendalikan ancaman terhadap sistem TI termasuk ...", ["Risk Management", "Performance Measurement", "Value Delivery", "Service Catalog"], 0, "Risk Management menangani identifikasi, analisis, dan pengendalian risiko."], ["Mengukur kinerja layanan TI melalui indikator dan target termasuk ...", ["Strategic Alignment", "Performance Measurement", "Resource Management", "Procurement"], 1, "Performance Measurement mengevaluasi pencapaian kinerja TI."], ["Kesepakatan tingkat layanan antara penyedia dan pengguna layanan dikenal sebagai ...", ["SLA", "RAM", "CPU", "VLAN"], 0, "SLA menjelaskan target dan komitmen tingkat layanan."], ["Kemampuan sistem untuk tetap berjalan ketika salah satu komponen gagal berkaitan dengan ...", ["Availability dan redundansi", "Resolusi layar", "Format dokumen", "Kompresi gambar"], 0, "Redundansi membantu menjaga ketersediaan saat terjadi kegagalan komponen."], ["Proses memperbarui perangkat lunak untuk memperbaiki celah keamanan dikenal sebagai ...", ["Patching", "Routing", "Rendering", "Partitioning"], 0, "Patch memperbaiki bug atau kerentanan perangkat lunak."], ["Menggunakan firewall untuk mengatur lalu lintas masuk dan keluar jaringan merupakan bagian dari ...", ["Keamanan jaringan", "Manajemen dokumen", "Desain grafis", "Pengolahan kata"], 0, "Firewall menerapkan aturan untuk mengizinkan atau memblokir lalu lintas jaringan."], ["Komputasi client-server membagi peran antara ...", ["Klien yang meminta layanan dan server yang menyediakan layanan", "Dua monitor yang berbagi resolusi", "CPU dan kipas pendingin", "Dua sistem operasi yang selalu identik"], 0, "Klien mengajukan permintaan, sedangkan server menyediakan layanan atau sumber daya."], ["Salah satu manfaat utama cloud computing bagi organisasi adalah ...", ["Sumber daya dapat disesuaikan dengan kebutuhan", "Tidak membutuhkan keamanan", "Selalu gratis tanpa batas", "Tidak memerlukan koneksi jaringan"], 0, "Cloud memungkinkan kapasitas dan layanan disesuaikan dengan kebutuhan, sesuai model dan penyedia."], ["Dalam pengelolaan TI, inventaris aset digunakan untuk ...", ["Mencatat perangkat dan sumber daya TI yang dimiliki", "Menghapus seluruh data lama", "Mengubah semua perangkat menjadi server", "Mengganti kebijakan keamanan"], 0, "Inventaris membantu organisasi mengetahui aset, kepemilikan, dan statusnya."]];
+const SESSION_SIZE = 20;
+const STORAGE_KEY = "ut_dasar_infrastruktur_ti_random_v2";
+let state = {used:[], session:1, current:[], submitted:false};
+let currentQuestions = [];
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function load(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY));if(s&&Array.isArray(s.used)&&Array.isArray(s.current)){state=s;return true;}}catch(e){}return false;}
+function createSession(){
+ let unused=BANK.map((_,i)=>i).filter(i=>!state.used.includes(i));
+ if(unused.length<SESSION_SIZE){state.used=[];unused=BANK.map((_,i)=>i);}
+ const picked=shuffle(unused).slice(0,SESSION_SIZE);
+ state.current=picked;state.used=[...state.used,...picked];state.submitted=false;
+ currentQuestions=picked.map(index=>{
+   const q=BANK[index];const options=shuffle(q[1].map((label,i)=>({label,correct:i===q[2]})));
+   return {question:q[0],options,explanation:q[3],answer:null};
+ });
+ save();render();
+}
+function render(){
+ document.getElementById("sessionTitle").textContent="Sesi "+state.session;
+ document.getElementById("sessionInfo").textContent=`Pilih satu jawaban untuk setiap soal. Total bank: ${BANK.length} soal unik.`;
+ document.getElementById("bankCount").textContent=`${BANK.length} soal tersedia`;
+ const root=document.getElementById("questions");root.innerHTML="";
+ currentQuestions.forEach((q,i)=>{
+  const box=document.createElement("section");box.className="qcard";
+  box.innerHTML=`<p class="qtitle"><span class="num">${i+1}.</span>${q.question}</p>`+
+   q.options.map((o,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}" ${q.answer===j?"checked":""} ${state.submitted?"disabled":""}><span><b>${String.fromCharCode(65+j)}.</b> ${o.label}</span></label>`).join("")+
+   `<div class="feedback" id="feedback${i}"></div>`;
+  root.appendChild(box);
+  if(state.submitted)showFeedback(i);
+ });
+ document.getElementById("submitArea").classList.toggle("hidden",state.submitted);
+ document.getElementById("nextArea").classList.toggle("hidden",!state.submitted);
+ document.getElementById("result").style.display=state.submitted?"block":"none";
+ if(state.submitted)showResult();
+ updateProgress();
+}
+function updateProgress(){
+ const n=currentQuestions.filter(q=>q.answer!==null).length;
+ document.getElementById("progressBar").style.width=(n/SESSION_SIZE*100)+"%";
+ document.getElementById("progressText").textContent=`${n}/${SESSION_SIZE} dijawab`;
+ document.getElementById("submitBtn").disabled=n!==SESSION_SIZE||state.submitted;
+}
+document.getElementById("questions").addEventListener("change",e=>{
+ if(!e.target.matches('input[type="radio"]')||state.submitted)return;
+ const i=Number(e.target.name.slice(1));currentQuestions[i].answer=Number(e.target.value);save();updateProgress();
+});
+function showFeedback(i){
+ const q=currentQuestions[i],chosen=q.answer,correct=q.options.findIndex(o=>o.correct),f=document.getElementById("feedback"+i);
+ if(chosen===correct){f.className="feedback good";f.textContent="Benar. "+q.explanation;}
+ else{f.className="feedback bad";f.textContent=(chosen===null?"Belum dijawab. ":"Belum tepat. ")+`Jawaban benar: ${String.fromCharCode(65+correct)}. ${q.options[correct].label}. `+q.explanation;}
+}
+function showResult(){
+ const score=currentQuestions.filter(q=>q.answer!==null&&q.options[q.answer].correct).length;
+ const r=document.getElementById("result");
+ r.innerHTML=`<h2>Hasil sesi ${state.session}</h2><div class="score">${score}/20</div><p>${Math.round(score/20*100)}% benar. ${score>=18?"Hasil sangat baik.":score>=15?"Cukup baik, periksa kembali jawaban yang keliru.":score>=10?"Masih perlu latihan pada beberapa materi.":"Gunakan pembahasan untuk mengulang konsep dasar."}</p><p class="muted">Semua jawaban dan pembahasan sudah ditampilkan di bawah masing-masing soal. Sesi berikutnya akan mengambil soal yang belum pernah muncul sampai seluruh bank soal terpakai.</p>`;
+}
+document.getElementById("submitBtn").addEventListener("click",()=>{
+ if(currentQuestions.some(q=>q.answer===null))return;
+ state.submitted=true;save();render();document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+});
+document.getElementById("resetBtn").addEventListener("click",()=>{
+ if(!confirm("Ulangi sesi ini? Soal sesi ini akan diacak ulang."))return;
+ state.submitted=false;
+ currentQuestions=currentQuestions.map(q=>({...q,answer:null}));
+ // Re-shuffle option order while preserving the correct answer marker.
+ currentQuestions=currentQuestions.map(q=>({ ...q, options:shuffle(q.options) }));
+ save();render();
+});
+document.getElementById("nextBtn").addEventListener("click",()=>{
+ state.session++;createSession();window.scrollTo({top:0,behavior:"smooth"});
+});
+if(!load()||!state.current.length){state={used:[],session:1,current:[],submitted:false};createSession();}
+else{
+ currentQuestions=state.current.map(index=>{
+  const q=BANK[index];const options=shuffle(q[1].map((label,i)=>({label,correct:i===q[2]})));
+  return {question:q[0],options,explanation:q[3],answer:null};
+ });
+ // Persist the exact displayed option order and selected answers for reliable resume.
+ if(state.optionSets&&state.answers){
+  currentQuestions=state.current.map((index,i)=>({question:BANK[index][0],options:state.optionSets[i],explanation:BANK[index][3],answer:state.answers[i]}));
+ }else{
+  state.optionSets=currentQuestions.map(q=>q.options);state.answers=currentQuestions.map(q=>q.answer);save();
+ }
+ render();
+}
+const originalSave=save;
+function save(){state.optionSets=currentQuestions.map(q=>q.options);state.answers=currentQuestions.map(q=>q.answer);localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+</script></body></html>
