@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/latihan_ujian_dasar_infrastruktur_ti.html"
+    }
+  ]
+}
